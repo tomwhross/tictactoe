@@ -2,6 +2,7 @@
 Tic Tac Toe Player
 """
 import math
+import random
 from copy import deepcopy
 
 X = "X"
@@ -183,6 +184,9 @@ def max_value(board):
     Returns a state with the highest possible utility
     """
 
+    # import pdb
+
+    # pdb.set_trace()
     if terminal(board):
         return utility(board)
 
@@ -192,6 +196,10 @@ def max_value(board):
         action_result = result(board, action)
         action_value = min_value(action_result)
         value = max(value, action_value)
+        # alpha = max(alpha, value)
+        # if beta <= alpha:
+        #     break
+        print(f"Action: {action}, Value: {value}")
 
     return value
 
@@ -200,6 +208,9 @@ def min_value(board):
     """
     Returns a state with the lowest possible utility
     """
+    # import pdb
+
+    # pdb.set_trace()
 
     if terminal(board):
         return utility(board)
@@ -210,29 +221,33 @@ def min_value(board):
         action_result = result(board, action)
         action_value = max_value(action_result)
         value = min(value, action_value)
+        # beta = min(beta, value)
+        # if beta <= alpha:
+        #     break
+        print(f"Action: {action}, Value: {value}")
 
     return value
 
 
-def minimax(board):
+def _minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
 
+    # import pdb
+
+    # pdb.set_trace()
     if terminal(board):
         return None
 
     # list orders are persistent in python
     # so two lists built together map to each other ordinally
     possible_actions = list(actions(board))
+    # possible_actions = [(2, 1), (2, 0), (0, 0)]
     minmax_values = []
 
     if player(board) is X:
-        # if board == initial_state():
-        #     return (0, 0)
-        # import pdb
 
-        # pdb.set_trace()
         for action in possible_actions:
             action_result = result(board, action)
             # x is the max player, but we've already made the first move
@@ -259,3 +274,86 @@ def minimax(board):
         return possible_actions[minmax_values.index(min(minmax_values))]
 
     return None
+
+
+def fminimax(board, alpha, beta):
+    # def fminimax(board):
+    # import pdb
+
+    # pdb.set_trace()
+    if terminal(board):
+        return utility(board)
+
+    if player(board) is X:
+        max_value = -math.inf
+
+        for action in actions(board):
+            action_result = result(board, action)
+
+            value = fminimax(action_result, alpha, beta)
+            # value = fminimax(action_result)
+            max_value = max(max_value, value)
+            print(f"--> Action: {action}, Value: {max_value}")
+
+            alpha = max(alpha, value)
+
+            if beta <= alpha:
+                break
+
+        return max_value
+
+    else:
+        min_value = math.inf
+
+        for action in actions(board):
+            action_result = result(board, action)
+
+            value = fminimax(action_result, alpha, beta)
+            # value = fminimax(action_result)
+
+            min_value = min(min_value, value)
+            print(f"--> Action: {action}, Value: {min_value}")
+
+            beta = min(beta, value)
+
+            if beta <= alpha:
+                break
+
+        return min_value
+
+
+def minimax(board):
+
+    # import pdb
+
+    # pdb.set_trace()
+
+    if terminal(board):
+        return None
+
+    # possible_actions = [(2, 1), (2, 0), (0, 0)]
+    possible_actions = list(actions(board))
+    random.shuffle(possible_actions)
+    minmax_values = []
+
+    if player(board) is X:
+        for action in possible_actions:
+            action_result = result(board, action)
+            value = fminimax(action_result, -math.inf, math.inf)
+            # value = fminimax(action_result)
+            print(f"Action: {action}, Value: {value}")
+
+            minmax_values.append(value)
+
+        return possible_actions[minmax_values.index(max(minmax_values))]
+
+    if player(board) is O:
+        for action in possible_actions:
+            action_result = result(board, action)
+            value = fminimax(action_result, -math.inf, math.inf)
+            # value = fminimax(action_result)
+            print(f"Action: {action}, Value: {value}")
+
+            minmax_values.append(value)
+
+        return possible_actions[minmax_values.index(min(minmax_values))]
