@@ -1,5 +1,10 @@
 """
 Tic Tac Toe Player
+
+Additional sources for Alpha-Beta Pruning:
+1. https://stackabuse.com/minimax-and-alpha-beta-pruning-in-python/
+2. https://www.hackerearth.com/blog/developers/minimax-algorithm-alpha-beta-pruning/
+3. https://www.youtube.com/watch?v=l-hh51ncgDI
 """
 import math
 import random
@@ -293,7 +298,7 @@ def fminimax(board, alpha, beta):
             value = fminimax(action_result, alpha, beta)
             # value = fminimax(action_result)
             max_value = max(max_value, value)
-            print(f"--> Action: {action}, Value: {max_value}")
+            print(f"----> Action: {action}, Value: {max_value}")
 
             alpha = max(alpha, value)
 
@@ -312,7 +317,7 @@ def fminimax(board, alpha, beta):
             # value = fminimax(action_result)
 
             min_value = min(min_value, value)
-            print(f"--> Action: {action}, Value: {min_value}")
+            print(f"----> Action: {action}, Value: {min_value}")
 
             beta = min(beta, value)
 
@@ -341,9 +346,13 @@ def minimax(board):
             action_result = result(board, action)
             value = fminimax(action_result, -math.inf, math.inf)
             # value = fminimax(action_result)
-            print(f"Action: {action}, Value: {value}")
+            print(f"--> Action: {action}, Value: {value}")
 
             minmax_values.append(value)
+
+        value_of_action = max(minmax_values)
+        action_to_take = possible_actions[minmax_values.index(min(minmax_values))]
+        print(f"> Action: {action_to_take}, Value: {value_of_action}")
 
         return possible_actions[minmax_values.index(max(minmax_values))]
 
@@ -352,8 +361,12 @@ def minimax(board):
             action_result = result(board, action)
             value = fminimax(action_result, -math.inf, math.inf)
             # value = fminimax(action_result)
-            print(f"Action: {action}, Value: {value}")
+            print(f"--> Action: {action}, Value: {value}")
 
             minmax_values.append(value)
+
+        value_of_action = min(minmax_values)
+        action_to_take = possible_actions[minmax_values.index(min(minmax_values))]
+        print(f"> Action: {action_to_take}, Value: {value_of_action}")
 
         return possible_actions[minmax_values.index(min(minmax_values))]
